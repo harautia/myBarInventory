@@ -13,9 +13,9 @@ the wholesale supplier.
 Oven-baked yeast-dough meat pies, adapted from
 [kinuskikissa.fi's lihapiirakat recipe](https://www.kinuskikissa.fi/lihapiirakat-uunissa):
 
-0.5l milk, 25g fresh yeast, 4.5tsp salt, 1.5tbsp sugar, 125g butter,
+0.5l milk, 25g fresh yeast, 22.5g salt, 18g sugar, 125g butter,
 1.1l bread flour, 0.19125kg rice, 1 onion, 450g ground meat,
-1 garlic clove, 1.5tsp black pepper, 1.5tsp paprika powder.
+1 garlic clove, 4.5g black pepper, 3.6g paprika powder.
 
 Notes:
 - Salt and butter are used at more than one step in the original recipe —
@@ -26,6 +26,10 @@ Notes:
   tracked ingredients and the purchase plan.
 - Rice is tracked by dry weight rather than volume: 2.25dl converted to
   kg at 1dl = 85g dry rice.
+- Salt, sugar, black pepper, and paprika powder are tracked by weight
+  rather than teaspoons/tablespoons: 4.5tsp salt at 5g/tsp = 22.5g;
+  1.5tbsp sugar (= 4.5tsp at 1tbsp = 3tsp) at 4g/tsp = 18g; 1.5tsp black
+  pepper at 3g/tsp = 4.5g; 1.5tsp paprika powder at 2.4g/tsp = 3.6g.
 
 ## Quick start
 

@@ -5,19 +5,24 @@
 // Water is part of the recipe but isn't purchased from the wholesaler,
 // so it's intentionally left out of tracked ingredients.
 // Rice: 2.25 dl dry rice converted to kg at 1 dl = 85 g -> 0.19125 kg.
+// Salt/sugar/black pepper/paprika converted from teaspoons to grams:
+//   salt: 4.5 tsp * 5 g/tsp = 22.5 g
+//   sugar: 1.5 tbsp = 4.5 tsp (1 tbsp = 3 tsp) * 4 g/tsp = 18 g
+//   black pepper: 1.5 tsp * 3 g/tsp = 4.5 g
+//   paprika powder: 1.5 tsp * 2.4 g/tsp = 3.6 g
 const INGREDIENTS = [
   { name: 'milk', unit: 'l', unit_type: 'continuous', quantity_per_batch: 0.5 },
   { name: 'fresh yeast', unit: 'g', unit_type: 'continuous', quantity_per_batch: 25 },
-  { name: 'salt', unit: 'tsp', unit_type: 'continuous', quantity_per_batch: 4.5 },
-  { name: 'sugar', unit: 'tbsp', unit_type: 'continuous', quantity_per_batch: 1.5 },
+  { name: 'salt', unit: 'g', unit_type: 'continuous', quantity_per_batch: 22.5 },
+  { name: 'sugar', unit: 'g', unit_type: 'continuous', quantity_per_batch: 18 },
   { name: 'butter', unit: 'g', unit_type: 'continuous', quantity_per_batch: 125 },
   { name: 'bread flour', unit: 'l', unit_type: 'continuous', quantity_per_batch: 1.1 },
   { name: 'rice', unit: 'kg', unit_type: 'continuous', quantity_per_batch: 0.19125 },
   { name: 'onion', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
   { name: 'ground meat', unit: 'g', unit_type: 'continuous', quantity_per_batch: 450 },
   { name: 'garlic clove', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
-  { name: 'black pepper', unit: 'tsp', unit_type: 'continuous', quantity_per_batch: 1.5 },
-  { name: 'paprika powder', unit: 'tsp', unit_type: 'continuous', quantity_per_batch: 1.5 }
+  { name: 'black pepper', unit: 'g', unit_type: 'continuous', quantity_per_batch: 4.5 },
+  { name: 'paprika powder', unit: 'g', unit_type: 'continuous', quantity_per_batch: 3.6 }
 ]
 
 exports.seed = async (knex) => {
