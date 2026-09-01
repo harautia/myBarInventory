@@ -1,0 +1,31 @@
+{
+  "name": "mybarinventory-backend",
+  "version": "0.0.1",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development node --watch index.js",
+    "test": "cross-env NODE_ENV=test node --test",
+    "lint": "eslint .",
+    "migrate": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback",
+    "seed": "knex seed:run"
+  },
+  "author": "Hannu Rautiainen",
+  "license": "MIT",
+  "description": "Backend for the meat pie production & purchase planner",
+  "dependencies": {
+    "cross-env": "^10.1.0",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "knex": "^3.1.0",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.30.1",
+    "@eslint/js": "^9.30.1",
+    "globals": "^16.3.0",
+    "supertest": "^7.1.4"
+  }
+}
