@@ -18,6 +18,8 @@ const getById = async (id) => {
       'ingredients.unit as unit',
       'ingredients.unit_type as unitType',
       'ingredients.current_stock as currentStock',
+      'ingredients.purchase_pack_size as purchasePackSize',
+      'ingredients.purchase_unit as purchaseUnit',
       'recipe_ingredients.quantity_per_batch as quantityPerBatch'
     )
 
@@ -31,6 +33,8 @@ const getById = async (id) => {
       unit: line.unit,
       unitType: line.unitType,
       currentStock: Number(line.currentStock),
+      purchasePackSize: Number(line.purchasePackSize),
+      purchaseUnit: line.purchaseUnit || line.unit,
       quantityPerBatch: Number(line.quantityPerBatch)
     }))
   }

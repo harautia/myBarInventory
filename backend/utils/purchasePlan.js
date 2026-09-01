@@ -14,9 +14,21 @@ const buildPurchasePlan = (recipe, pieCount) => {
     const isDiscrete = ingredient.unitType === 'discrete'
     const neededRounded = isDiscrete ? Math.ceil(needed) : needed
     const rawShortfall = Math.max(0, round(neededRounded - ingredient.currentStock))
-    const shortfall = ingredient.unit === 'g' && rawShortfall > 0
-      ? roundUpToTen(rawShortfall)
-      : rawShortfall
+
+    // Ingredients purchased under a different unit than they're tracked in
+    // (e.g. garlic cloves bought as whole garlics, 10 cloves per whole) buy
+    // whole packs; plain gram ingredients round the shortfall up to the
+    // nearest 10 g; everything else is purchased as the precise shortfall.
+    const purchaseUnit = ingredient.purchaseUnit || ingredient.unit
+    const packSize = ingredient.purchasePackSize || 1
+    let shortfall = rawShortfall
+    if (rawShortfall > 0) {
+      if (purchaseUnit !== ingredient.unit) {
+        shortfall = Math.ceil(rawShortfall / packSize)
+      } else if (ingredient.unit === 'g') {
+        shortfall = roundUpToTen(rawShortfall)
+      }
+    }
 
     return {
       ingredientId: ingredient.ingredientId,
@@ -26,14 +38,15 @@ const buildPurchasePlan = (recipe, pieCount) => {
       needed,
       ...(neededRounded !== needed ? { neededRounded } : {}),
       currentStock: ingredient.currentStock,
-      ...(shortfall !== rawShortfall ? { rawShortfall } : {}),
-      shortfall
+      ...(rawShortfall > 0 ? { rawShortfall } : {}),
+      shortfall,
+      purchaseUnit
     }
   })
 
   const purchaseList = lines
     .filter((line) => line.shortfall > 0)
-    .map((line) => ({ ingredientId: line.ingredientId, name: line.name, unit: line.unit, amount: line.shortfall }))
+    .map((line) => ({ ingredientId: line.ingredientId, name: line.name, unit: line.purchaseUnit, amount: line.shortfall }))
 
   return {
     recipeId: recipe.id,

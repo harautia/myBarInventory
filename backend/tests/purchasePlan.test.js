@@ -8,7 +8,17 @@ const recipe = {
   ingredients: [
     { ingredientId: 1, name: 'butter', unit: 'g', unitType: 'continuous', quantityPerBatch: 100, currentStock: 0 },
     { ingredientId: 2, name: 'egg', unit: 'unit', unitType: 'discrete', quantityPerBatch: 1, currentStock: 0 },
-    { ingredientId: 3, name: 'salt', unit: 'g', unitType: 'continuous', quantityPerBatch: 22.5, currentStock: 0 }
+    { ingredientId: 3, name: 'salt', unit: 'g', unitType: 'continuous', quantityPerBatch: 22.5, currentStock: 0 },
+    {
+      ingredientId: 4,
+      name: 'garlic clove',
+      unit: 'piece',
+      unitType: 'discrete',
+      quantityPerBatch: 1,
+      currentStock: 0,
+      purchasePackSize: 10,
+      purchaseUnit: 'whole garlic'
+    }
   ]
 }
 
@@ -33,7 +43,7 @@ describe('buildPurchasePlan', () => {
     assert.strictEqual(egg.needed, 1)
     assert.strictEqual(egg.neededRounded, undefined) // already whole, no rounding note needed
     assert.strictEqual(egg.shortfall, 1)
-    assert.strictEqual(plan.purchaseList.length, 3)
+    assert.strictEqual(plan.purchaseList.length, 4)
   })
 
   test('2.5 batches rounds discrete eggs up, never leaves a negative shortfall', () => {
@@ -78,6 +88,26 @@ describe('buildPurchasePlan', () => {
     const butter = plan.lines.find((l) => l.name === 'butter')
     assert.strictEqual(butter.rawShortfall, 12)
     assert.strictEqual(butter.shortfall, 20)
+  })
+
+  test('garlic cloves are purchased as whole garlics (10 cloves per whole)', () => {
+    // 11 batches -> 11 cloves needed, none in stock -> buy 2 whole garlics
+    const elevenBatches = buildPurchasePlan(withStockFor('garlic clove', 0), 110)
+    const garlicMany = elevenBatches.lines.find((l) => l.name === 'garlic clove')
+    assert.strictEqual(garlicMany.needed, 11)
+    assert.strictEqual(garlicMany.rawShortfall, 11)
+    assert.strictEqual(garlicMany.shortfall, 2)
+    assert.strictEqual(garlicMany.purchaseUnit, 'whole garlic')
+    assert.strictEqual(
+      elevenBatches.purchaseList.find((l) => l.name === 'garlic clove').unit,
+      'whole garlic'
+    )
+
+    // same 11 needed, 5 already in stock -> 6 raw shortfall -> still just 1 whole garlic
+    const withPartialStock = buildPurchasePlan(withStockFor('garlic clove', 5), 110)
+    const garlicPartial = withPartialStock.lines.find((l) => l.name === 'garlic clove')
+    assert.strictEqual(garlicPartial.rawShortfall, 6)
+    assert.strictEqual(garlicPartial.shortfall, 1)
   })
 
   test('sufficient stock everywhere yields an empty purchase list', () => {

@@ -37,8 +37,13 @@ Notes:
 The purchase amount (shortfall) for any gram-based ingredient is rounded
 *up* to the nearest 10g — e.g. a 12g shortfall becomes 20g, never rounded
 down to 10g. This means a purchase can leave a small surplus in stock,
-but never leaves you short. Discrete ingredients (onion, garlic clove)
-are still rounded up to the nearest whole item, as before.
+but never leaves you short. Discrete ingredients (onion) are still
+rounded up to the nearest whole item, as before.
+
+Garlic cloves are tracked and used individually, but purchased as whole
+garlics (10 cloves = 1 whole garlic): the breakdown table still shows
+the raw clove shortfall, while the purchase list rounds up to whole
+garlics — e.g. an 11-clove shortfall buys 2 whole garlics.
 
 ## Quick start
 

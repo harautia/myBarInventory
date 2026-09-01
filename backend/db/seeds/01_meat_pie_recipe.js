@@ -11,6 +11,9 @@
 //   sugar: 1.5 tbsp = 4.5 tsp (1 tbsp = 3 tsp) * 4 g/tsp = 18 g
 //   black pepper: 1.5 tsp * 3 g/tsp = 4.5 g
 //   paprika powder: 1.5 tsp * 2.4 g/tsp = 3.6 g
+// Garlic cloves are tracked/used individually but purchased as whole
+// garlics: 10 cloves = 1 whole garlic, so the purchase list buys whole
+// garlics rather than a loose number of cloves.
 const INGREDIENTS = [
   { name: 'milk', unit: 'l', unit_type: 'continuous', quantity_per_batch: 0.5 },
   { name: 'fresh yeast', unit: 'g', unit_type: 'continuous', quantity_per_batch: 25 },
@@ -21,7 +24,14 @@ const INGREDIENTS = [
   { name: 'rice', unit: 'g', unit_type: 'continuous', quantity_per_batch: 191.25 },
   { name: 'onion', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
   { name: 'ground meat', unit: 'g', unit_type: 'continuous', quantity_per_batch: 450 },
-  { name: 'garlic clove', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
+  {
+    name: 'garlic clove',
+    unit: 'piece',
+    unit_type: 'discrete',
+    quantity_per_batch: 1,
+    purchase_pack_size: 10,
+    purchase_unit: 'whole garlic'
+  },
   { name: 'black pepper', unit: 'g', unit_type: 'continuous', quantity_per_batch: 4.5 },
   { name: 'paprika powder', unit: 'g', unit_type: 'continuous', quantity_per_batch: 3.6 }
 ]
@@ -38,7 +48,14 @@ exports.seed = async (knex) => {
   await knex.raw('ALTER SEQUENCE recipe_ingredients_id_seq RESTART WITH 1')
 
   await knex('ingredients').insert(
-    INGREDIENTS.map(({ name, unit, unit_type }) => ({ name, unit, unit_type, current_stock: 0 }))
+    INGREDIENTS.map(({ name, unit, unit_type, purchase_pack_size, purchase_unit }) => ({
+      name,
+      unit,
+      unit_type,
+      current_stock: 0,
+      purchase_pack_size: purchase_pack_size || 1,
+      purchase_unit: purchase_unit || null
+    }))
   )
 
   const [recipe] = await knex('recipes')
