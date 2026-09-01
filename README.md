@@ -34,11 +34,11 @@ Notes:
 
 ## Purchase plan rounding
 
-Amounts needed for any gram-based ingredient are rounded up to the
-nearest 10g before computing the shortfall (e.g. 22.5g salt needed ->
-30g), since that's a more realistic purchasing increment than a precise
-fractional gram amount. Discrete ingredients (onion, garlic clove) are
-still rounded up to the nearest whole item, as before.
+The purchase amount (shortfall) for any gram-based ingredient is rounded
+*up* to the nearest 10g — e.g. a 12g shortfall becomes 20g, never rounded
+down to 10g. This means a purchase can leave a small surplus in stock,
+but never leaves you short. Discrete ingredients (onion, garlic clove)
+are still rounded up to the nearest whole item, as before.
 
 ## Quick start
 

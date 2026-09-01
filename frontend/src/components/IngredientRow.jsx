@@ -1,14 +1,16 @@
 const formatNeeded = (line) => {
-  const hasRoundedValue = line.neededRounded !== undefined
-  const displayValue = hasRoundedValue ? line.neededRounded : line.needed
-
-  if (hasRoundedValue && line.neededRounded !== line.needed) {
-    const reason = line.unitType === 'discrete'
-      ? `rounded up, can't buy a fraction of an ${line.name}`
-      : `rounded up to the nearest 10 ${line.unit}`
-    return `${line.needed} needed → ${line.neededRounded} (${reason})`
+  if (line.neededRounded !== undefined && line.neededRounded !== line.needed) {
+    return `${line.needed} needed → ${line.neededRounded} (rounded up, can't buy a fraction of an ${line.name})`
   }
-  return displayValue
+  return line.needed
+}
+
+const formatShortfall = (line) => {
+  if (line.shortfall <= 0) return '—'
+  if (line.rawShortfall !== undefined) {
+    return `${line.shortfall} ${line.unit} (${line.rawShortfall} ${line.unit} short, rounded up to the nearest 10 ${line.unit} — extra goes to stock)`
+  }
+  return `${line.shortfall} ${line.unit}`
 }
 
 const IngredientRow = ({ line }) => (
@@ -16,7 +18,7 @@ const IngredientRow = ({ line }) => (
     <td>{line.name}</td>
     <td>{formatNeeded(line)} {line.unit}</td>
     <td>{line.currentStock} {line.unit}</td>
-    <td>{line.shortfall > 0 ? `${line.shortfall} ${line.unit}` : '—'}</td>
+    <td>{formatShortfall(line)}</td>
   </tr>
 )
 

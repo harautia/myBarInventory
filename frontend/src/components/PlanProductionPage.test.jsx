@@ -36,8 +36,8 @@ const planWithGramRounding = {
       unit: 'g',
       unitType: 'continuous',
       needed: 22.5,
-      neededRounded: 30,
       currentStock: 0,
+      rawShortfall: 22.5,
       shortfall: 30
     }
   ],
@@ -59,7 +59,7 @@ describe('PlanProductionPage', () => {
     expect(screen.getByText(/egg: 3 unit/)).toBeInTheDocument()
   })
 
-  test('shows gram quantities rounded up to the nearest 10', async () => {
+  test('shows gram shortfalls rounded up to the nearest 10', async () => {
     recipeService.getPurchasePlan.mockResolvedValue(planWithGramRounding)
 
     render(<PlanProductionPage />)
@@ -67,8 +67,9 @@ describe('PlanProductionPage', () => {
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: /calculate/i }))
 
-    expect(await screen.findByText(/22\.5 needed → 30/)).toBeInTheDocument()
+    expect(await screen.findByText(/22\.5 g short/)).toBeInTheDocument()
     expect(screen.getByText(/nearest 10 g/)).toBeInTheDocument()
+    expect(screen.getByText(/extra goes to stock/)).toBeInTheDocument()
     expect(screen.getByText(/salt: 30 g/)).toBeInTheDocument()
   })
 })
