@@ -32,6 +32,14 @@ Notes:
   1.5tbsp sugar (= 4.5tsp at 1tbsp = 3tsp) at 4g/tsp = 18g; 1.5tsp black
   pepper at 3g/tsp = 4.5g; 1.5tsp paprika powder at 2.4g/tsp = 3.6g.
 
+## Purchase plan rounding
+
+Amounts needed for any gram-based ingredient are rounded up to the
+nearest 10g before computing the shortfall (e.g. 22.5g salt needed ->
+30g), since that's a more realistic purchasing increment than a precise
+fractional gram amount. Discrete ingredients (onion, garlic clove) are
+still rounded up to the nearest whole item, as before.
+
 ## Quick start
 
 ```bash

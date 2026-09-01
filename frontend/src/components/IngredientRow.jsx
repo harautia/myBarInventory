@@ -1,8 +1,14 @@
 const formatNeeded = (line) => {
-  if (line.unitType === 'discrete' && line.neededRounded !== line.needed) {
-    return `${line.needed} needed → ${line.neededRounded} (rounded up, can't buy a fraction of an ${line.name})`
+  const hasRoundedValue = line.neededRounded !== undefined
+  const displayValue = hasRoundedValue ? line.neededRounded : line.needed
+
+  if (hasRoundedValue && line.neededRounded !== line.needed) {
+    const reason = line.unitType === 'discrete'
+      ? `rounded up, can't buy a fraction of an ${line.name}`
+      : `rounded up to the nearest 10 ${line.unit}`
+    return `${line.needed} needed → ${line.neededRounded} (${reason})`
   }
-  return line.unitType === 'discrete' ? line.neededRounded : line.needed
+  return displayValue
 }
 
 const IngredientRow = ({ line }) => (
