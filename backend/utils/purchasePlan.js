@@ -1,5 +1,5 @@
-// 3 decimals to preserve liter quantities like 0.225 l (= 2.25 dl) without loss.
-const round = (value) => Math.round(value * 1000) / 1000
+// 5 decimals to preserve quantities like 0.19125 kg (rice) without loss.
+const round = (value) => Math.round(value * 100000) / 100000
 
 const buildPurchasePlan = (recipe, pieCount) => {
   const batches = pieCount / recipe.yieldCount
