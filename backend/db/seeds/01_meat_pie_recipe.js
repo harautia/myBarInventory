@@ -1,11 +1,21 @@
+// Source: https://www.kinuskikissa.fi/lihapiirakat-uunissa (yeast-dough
+// oven-baked meat pies, yields 20). Ingredients used at more than one
+// recipe step (salt in the dough/rice/filling, butter in the
+// dough/filling/topping) are combined into a single total quantity.
 const INGREDIENTS = [
-  { name: 'butter', unit: 'g', unit_type: 'continuous', quantity_per_batch: 100 },
-  { name: 'flour', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 5 },
-  { name: 'meat', unit: 'g', unit_type: 'continuous', quantity_per_batch: 200 },
-  { name: 'salt', unit: 'g', unit_type: 'continuous', quantity_per_batch: 10 },
-  { name: 'pepper', unit: 'g', unit_type: 'continuous', quantity_per_batch: 5 },
-  { name: 'sour cream', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 1 },
-  { name: 'egg', unit: 'unit', unit_type: 'discrete', quantity_per_batch: 1 }
+  { name: 'milk', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 5 },
+  { name: 'fresh yeast', unit: 'g', unit_type: 'continuous', quantity_per_batch: 25 },
+  { name: 'salt', unit: 'tsp', unit_type: 'continuous', quantity_per_batch: 4.5 },
+  { name: 'sugar', unit: 'tbsp', unit_type: 'continuous', quantity_per_batch: 1.5 },
+  { name: 'butter', unit: 'g', unit_type: 'continuous', quantity_per_batch: 125 },
+  { name: 'bread flour', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 11 },
+  { name: 'water', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 6.5 },
+  { name: 'rice', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 2.25 },
+  { name: 'onion', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
+  { name: 'ground meat', unit: 'g', unit_type: 'continuous', quantity_per_batch: 450 },
+  { name: 'garlic clove', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
+  { name: 'black pepper', unit: 'tsp', unit_type: 'continuous', quantity_per_batch: 1.5 },
+  { name: 'paprika powder', unit: 'tsp', unit_type: 'continuous', quantity_per_batch: 1.5 }
 ]
 
 exports.seed = async (knex) => {
@@ -13,12 +23,18 @@ exports.seed = async (knex) => {
   await knex('recipes').del()
   await knex('ingredients').del()
 
+  // Reset serial sequences so re-seeding always reproduces the same ids
+  // (the frontend hardcodes recipe id 1 for this single-recipe v1).
+  await knex.raw('ALTER SEQUENCE ingredients_id_seq RESTART WITH 1')
+  await knex.raw('ALTER SEQUENCE recipes_id_seq RESTART WITH 1')
+  await knex.raw('ALTER SEQUENCE recipe_ingredients_id_seq RESTART WITH 1')
+
   await knex('ingredients').insert(
     INGREDIENTS.map(({ name, unit, unit_type }) => ({ name, unit, unit_type, current_stock: 0 }))
   )
 
   const [recipe] = await knex('recipes')
-    .insert({ name: 'Classic Meat Pie', yield_count: 10 })
+    .insert({ name: 'Oven-Baked Meat Pies (Lihapiirakat)', yield_count: 20 })
     .returning('id')
 
   const ingredientRows = await knex('ingredients').select('id', 'name')

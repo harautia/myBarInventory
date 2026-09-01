@@ -8,9 +8,18 @@ the wholesale supplier.
 - `backend/` — Express API + PostgreSQL (via Knex). See [backend/README.md](backend/README.md).
 - `frontend/` — React + Vite UI. See [frontend/README.md](frontend/README.md).
 
-## Recipe (yields 10 pies)
+## Recipe (yields 20 pies)
 
-100g butter, 5dl flour, 200g meat, 10g salt, 5g pepper, 1dl sour cream, 1 egg.
+Oven-baked yeast-dough meat pies, adapted from
+[kinuskikissa.fi's lihapiirakat recipe](https://www.kinuskikissa.fi/lihapiirakat-uunissa):
+
+5dl milk, 25g fresh yeast, 4.5tsp salt, 1.5tbsp sugar, 125g butter,
+11dl bread flour, 6.5dl water, 2.25dl rice, 1 onion, 450g ground meat,
+1 garlic clove, 1.5tsp black pepper, 1.5tsp paprika powder.
+
+(Salt and butter are used at more than one step in the original recipe —
+dough, filling, and topping — and are combined here into one total
+quantity per ingredient.)
 
 ## Quick start
 
