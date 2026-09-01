@@ -59,7 +59,7 @@ describe('PlanProductionPage', () => {
     expect(screen.getByText(/egg: 3 unit/)).toBeInTheDocument()
   })
 
-  test('shows gram shortfalls rounded up to the nearest 10', async () => {
+  test('shows the raw shortfall in the table and the rounded amount in the purchase list', async () => {
     recipeService.getPurchasePlan.mockResolvedValue(planWithGramRounding)
 
     render(<PlanProductionPage />)
@@ -67,9 +67,10 @@ describe('PlanProductionPage', () => {
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: /calculate/i }))
 
-    expect(await screen.findByText(/22\.5 g short/)).toBeInTheDocument()
-    expect(screen.getByText(/nearest 10 g/)).toBeInTheDocument()
-    expect(screen.getByText(/extra goes to stock/)).toBeInTheDocument()
+    // "22.5 g" appears twice in the breakdown table: the Needed column and
+    // the (unrounded) Shortfall column both show the raw 22.5 g value.
+    expect(await screen.findAllByText('22.5 g')).toHaveLength(2)
+    expect(screen.getByText(/Purchase list \(rounded values\)/)).toBeInTheDocument()
     expect(screen.getByText(/salt: 30 g/)).toBeInTheDocument()
   })
 })

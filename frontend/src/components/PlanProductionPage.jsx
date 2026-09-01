@@ -59,7 +59,7 @@ const PlanProductionPage = () => {
           </table>
 
           <div className="purchase-list">
-            <h3>Purchase list</h3>
+            <h3>Purchase list (rounded values)</h3>
             {plan.purchaseList.length === 0 ? (
               <p>Nothing to buy — stock already covers this plan.</p>
             ) : (

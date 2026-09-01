@@ -7,10 +7,8 @@ const formatNeeded = (line) => {
 
 const formatShortfall = (line) => {
   if (line.shortfall <= 0) return '—'
-  if (line.rawShortfall !== undefined) {
-    return `${line.shortfall} ${line.unit} (${line.rawShortfall} ${line.unit} short, rounded up to the nearest 10 ${line.unit} — extra goes to stock)`
-  }
-  return `${line.shortfall} ${line.unit}`
+  const value = line.rawShortfall !== undefined ? line.rawShortfall : line.shortfall
+  return `${value} ${line.unit}`
 }
 
 const IngredientRow = ({ line }) => (
