@@ -3,14 +3,14 @@
 // recipe step (salt in the dough/rice/filling, butter in the
 // dough/filling/topping) are combined into a single total quantity.
 const INGREDIENTS = [
-  { name: 'milk', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 5 },
+  { name: 'milk', unit: 'l', unit_type: 'continuous', quantity_per_batch: 0.5 },
   { name: 'fresh yeast', unit: 'g', unit_type: 'continuous', quantity_per_batch: 25 },
   { name: 'salt', unit: 'tsp', unit_type: 'continuous', quantity_per_batch: 4.5 },
   { name: 'sugar', unit: 'tbsp', unit_type: 'continuous', quantity_per_batch: 1.5 },
   { name: 'butter', unit: 'g', unit_type: 'continuous', quantity_per_batch: 125 },
-  { name: 'bread flour', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 11 },
-  { name: 'water', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 6.5 },
-  { name: 'rice', unit: 'dl', unit_type: 'continuous', quantity_per_batch: 2.25 },
+  { name: 'bread flour', unit: 'l', unit_type: 'continuous', quantity_per_batch: 1.1 },
+  { name: 'water', unit: 'l', unit_type: 'continuous', quantity_per_batch: 0.65 },
+  { name: 'rice', unit: 'l', unit_type: 'continuous', quantity_per_batch: 0.225 },
   { name: 'onion', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
   { name: 'ground meat', unit: 'g', unit_type: 'continuous', quantity_per_batch: 450 },
   { name: 'garlic clove', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },

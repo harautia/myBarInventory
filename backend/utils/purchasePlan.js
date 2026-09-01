@@ -1,13 +1,14 @@
-const round2 = (value) => Math.round(value * 100) / 100
+// 3 decimals to preserve liter quantities like 0.225 l (= 2.25 dl) without loss.
+const round = (value) => Math.round(value * 1000) / 1000
 
 const buildPurchasePlan = (recipe, pieCount) => {
   const batches = pieCount / recipe.yieldCount
 
   const lines = recipe.ingredients.map((ingredient) => {
-    const needed = round2(ingredient.quantityPerBatch * batches)
+    const needed = round(ingredient.quantityPerBatch * batches)
     const isDiscrete = ingredient.unitType === 'discrete'
     const neededRounded = isDiscrete ? Math.ceil(needed) : needed
-    const shortfall = Math.max(0, round2(neededRounded - ingredient.currentStock))
+    const shortfall = Math.max(0, round(neededRounded - ingredient.currentStock))
 
     return {
       ingredientId: ingredient.ingredientId,
