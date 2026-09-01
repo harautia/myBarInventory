@@ -4,7 +4,8 @@
 // dough/filling/topping) are combined into a single total quantity.
 // Water is part of the recipe but isn't purchased from the wholesaler,
 // so it's intentionally left out of tracked ingredients.
-// Rice: 2.25 dl dry rice converted to kg at 1 dl = 85 g -> 0.19125 kg.
+// Rice: 2.25 dl dry rice converted to g at 1 dl = 85 g -> 191.25 g
+// (kept in grams to match the other weight-based ingredients).
 // Salt/sugar/black pepper/paprika converted from teaspoons to grams:
 //   salt: 4.5 tsp * 5 g/tsp = 22.5 g
 //   sugar: 1.5 tbsp = 4.5 tsp (1 tbsp = 3 tsp) * 4 g/tsp = 18 g
@@ -17,7 +18,7 @@ const INGREDIENTS = [
   { name: 'sugar', unit: 'g', unit_type: 'continuous', quantity_per_batch: 18 },
   { name: 'butter', unit: 'g', unit_type: 'continuous', quantity_per_batch: 125 },
   { name: 'bread flour', unit: 'l', unit_type: 'continuous', quantity_per_batch: 1.1 },
-  { name: 'rice', unit: 'kg', unit_type: 'continuous', quantity_per_batch: 0.19125 },
+  { name: 'rice', unit: 'g', unit_type: 'continuous', quantity_per_batch: 191.25 },
   { name: 'onion', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
   { name: 'ground meat', unit: 'g', unit_type: 'continuous', quantity_per_batch: 450 },
   { name: 'garlic clove', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
