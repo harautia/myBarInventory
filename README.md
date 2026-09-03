@@ -45,6 +45,10 @@ garlics (10 cloves = 1 whole garlic): the breakdown table still shows
 the raw clove shortfall, while the purchase list rounds up to whole
 garlics — e.g. an 11-clove shortfall buys 2 whole garlics.
 
+Gram amounts of 1000g or more are displayed as kilograms with one
+decimal (e.g. 45000g shows as "45.0 kg") wherever a quantity is shown
+in the UI — the underlying data stays in grams either way.
+
 ## Quick start
 
 ```bash

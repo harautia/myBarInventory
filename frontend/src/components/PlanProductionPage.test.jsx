@@ -44,6 +44,25 @@ const planWithGramRounding = {
   purchaseList: [{ ingredientId: 3, name: 'salt', unit: 'g', amount: 30 }]
 }
 
+const planWithLargeGramAmount = {
+  recipeId: 1,
+  pieCount: 2000,
+  batches: 100,
+  lines: [
+    {
+      ingredientId: 9,
+      name: 'ground meat',
+      unit: 'g',
+      unitType: 'continuous',
+      needed: 45000,
+      currentStock: 0,
+      rawShortfall: 45000,
+      shortfall: 45000
+    }
+  ],
+  purchaseList: [{ ingredientId: 9, name: 'ground meat', unit: 'g', amount: 45000 }]
+}
+
 describe('PlanProductionPage', () => {
   test('shows rounded egg quantity and the shortfall in the purchase list', async () => {
     recipeService.getPurchasePlan.mockResolvedValue(planFor25Pies)
@@ -72,5 +91,17 @@ describe('PlanProductionPage', () => {
     expect(await screen.findAllByText('22.5 g')).toHaveLength(2)
     expect(screen.getByText(/Purchase list \(rounded values\)/)).toBeInTheDocument()
     expect(screen.getByText(/salt: 30 g/)).toBeInTheDocument()
+  })
+
+  test('shows gram amounts of 1000 g or more as kilograms with one decimal', async () => {
+    recipeService.getPurchasePlan.mockResolvedValue(planWithLargeGramAmount)
+
+    render(<PlanProductionPage />)
+
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: /calculate/i }))
+
+    expect(await screen.findAllByText('45.0 kg')).toHaveLength(2)
+    expect(screen.getByText(/ground meat: 45\.0 kg/)).toBeInTheDocument()
   })
 })

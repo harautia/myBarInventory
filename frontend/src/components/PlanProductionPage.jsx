@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import recipeService from '../services/recipes'
 import IngredientRow from './IngredientRow'
+import formatQuantity from '../utils/formatQuantity'
 
 const RECIPE_ID = 1
 
@@ -66,7 +67,7 @@ const PlanProductionPage = () => {
               <ul>
                 {plan.purchaseList.map((item) => (
                   <li key={item.ingredientId}>
-                    {item.name}: {item.amount} {item.unit}
+                    {item.name}: {formatQuantity(item.amount, item.unit)}
                   </li>
                 ))}
               </ul>
