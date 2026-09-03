@@ -1,12 +1,18 @@
 const db = require('../db/db')
+const { naturalUnitFor } = require('../utils/naturalUnit')
 
-const toDto = (row) => ({
-  id: row.id,
-  name: row.name,
-  unit: row.unit,
-  unitType: row.unit_type,
-  currentStock: Number(row.current_stock)
-})
+const toDto = (row) => {
+  const purchaseUnit = row.purchase_unit || row.unit
+  return {
+    id: row.id,
+    name: row.name,
+    unit: row.unit,
+    unitType: row.unit_type,
+    currentStock: Number(row.current_stock),
+    purchaseUnit,
+    naturalUnit: naturalUnitFor(purchaseUnit)
+  }
+}
 
 const getAll = async () => {
   const rows = await db('ingredients').select().orderBy('name')

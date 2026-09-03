@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import recipeService from '../services/recipes'
 import IngredientRow from './IngredientRow'
+import PriceComparison from './PriceComparison'
 import formatQuantity from '../utils/formatQuantity'
 
 const RECIPE_ID = 1
@@ -73,6 +74,8 @@ const PlanProductionPage = () => {
               </ul>
             )}
           </div>
+
+          {plan.priceComparison && <PriceComparison comparison={plan.priceComparison} />}
         </>
       )}
     </div>

@@ -14,8 +14,11 @@ npm run dev      # http://localhost:5173, expects backend running on :3003
 ## Pages
 
 - **Plan production** — enter a target pie count, see needed ingredients,
-  current stock, shortfall, and the resulting purchase list.
+  current stock, shortfall, the resulting purchase list, and (once
+  supplier prices are entered) a price/delivery cost comparison.
 - **Inventory** — view and edit current stock levels for each ingredient.
+- **Suppliers** — manage suppliers (delivery fee, free-delivery
+  threshold) and their price per ingredient.
 
 ## Testing / linting
 

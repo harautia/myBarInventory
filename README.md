@@ -2,8 +2,9 @@
 
 A small internal tool for an imaginary bar: plan how many meat pies to
 produce, convert that into required ingredient quantities from a fixed
-recipe, compare against current stock, and generate a purchase list for
-the wholesale supplier.
+recipe, compare against current stock, generate a purchase list, and
+compare prices/delivery costs across your suppliers to find the
+cheapest way to buy it.
 
 - `backend/` — Express API + PostgreSQL (via Knex). See [backend/README.md](backend/README.md).
 - `frontend/` — React + Vite UI. See [frontend/README.md](frontend/README.md).
@@ -48,6 +49,29 @@ garlics — e.g. an 11-clove shortfall buys 2 whole garlics.
 Gram amounts of 1000g or more are displayed as kilograms with one
 decimal (e.g. 45000g shows as "45.0 kg") wherever a quantity is shown
 in the UI — the underlying data stays in grams either way.
+
+## Supplier prices & delivery cost
+
+There's no public price API for Finnish wholesalers (Kespro, Meira
+Nova, Metro-tukku are all login-walled B2B) or supermarkets, so prices
+are entered manually on the **Suppliers** page: add a supplier (with
+its delivery fee and free-delivery threshold), then fill in a price
+per ingredient in whatever unit it's normally quoted in (€/kg, €/l,
+€/piece, €/whole garlic).
+
+The Plan production page then shows two views once a purchase plan is
+calculated:
+- **Cheapest per ingredient** — picks the lowest price for each
+  ingredient independently, which can mean ordering from several
+  suppliers and paying more than one delivery fee.
+- **Cheapest single supplier** — ranks suppliers who can fulfill the
+  *entire* purchase list by total cost (items + one delivery fee), so
+  you can compare "buy everywhere it's cheapest" against "buy it all
+  from one place."
+
+Ingredients nobody has priced yet, and suppliers missing prices for
+part of the list, are called out explicitly rather than silently
+skipped.
 
 ## Quick start
 
