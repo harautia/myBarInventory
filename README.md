@@ -2,9 +2,7 @@
 
 A small internal tool for an imaginary bar: plan how many meat pies to
 produce, convert that into required ingredient quantities from a fixed
-recipe, compare against current stock, generate a purchase list, and
-compare prices/delivery costs across your suppliers to find the
-cheapest way to buy it.
+recipe, compare against current stock, and generate a purchase list.
 
 - `backend/` — Express API + PostgreSQL (via Knex). See [backend/README.md](backend/README.md).
 - `frontend/` — React + Vite UI. See [frontend/README.md](frontend/README.md).
@@ -50,29 +48,6 @@ Gram amounts of 1000g or more are displayed as kilograms with one
 decimal (e.g. 45000g shows as "45.0 kg") wherever a quantity is shown
 in the UI — the underlying data stays in grams either way.
 
-## Supplier prices & delivery cost
-
-There's no public price API for Finnish wholesalers (Kespro, Meira
-Nova, Metro-tukku are all login-walled B2B) or supermarkets, so prices
-are entered manually on the **Suppliers** page: add a supplier (with
-its delivery fee and free-delivery threshold), then fill in a price
-per ingredient in whatever unit it's normally quoted in (€/kg, €/l,
-€/piece, €/whole garlic).
-
-The Plan production page then shows two views once a purchase plan is
-calculated:
-- **Cheapest per ingredient** — picks the lowest price for each
-  ingredient independently, which can mean ordering from several
-  suppliers and paying more than one delivery fee.
-- **Cheapest single supplier** — ranks suppliers who can fulfill the
-  *entire* purchase list by total cost (items + one delivery fee), so
-  you can compare "buy everywhere it's cheapest" against "buy it all
-  from one place."
-
-Ingredients nobody has priced yet, and suppliers missing prices for
-part of the list, are called out explicitly rather than silently
-skipped.
-
 ## Quick start
 
 ```bash
@@ -89,3 +64,27 @@ cd frontend
 npm install
 npm run dev              # http://localhost:5173
 ```
+
+## Deploying to Render
+
+The repo root has a `Dockerfile` that builds the frontend and serves it
+as static files from the backend Express app — one combined service —
+plus a `render.yaml` Blueprint that provisions both the web service and
+a free Postgres database.
+
+1. Push `Dockerfile`, `.dockerignore`, and `render.yaml` to GitHub.
+2. In Render's dashboard: **New → Blueprint**, select this repo. Render
+   reads `render.yaml` and shows both resources (web service +
+   database) to create.
+3. Apply the blueprint and wait for the first build to finish.
+4. One-time only: open the web service's **Shell** tab and run
+   `npm run seed` (from `backend/`) to load the recipe/ingredient data.
+   Migrations already ran automatically as part of the container's
+   start command, so this step only needs the data, not the schema.
+5. Visit the service's `*.onrender.com` URL and confirm a purchase-plan
+   calculation works end-to-end.
+
+This is a free-tier deployment, so two things are expected behavior,
+not bugs: the service spins down after ~15 minutes idle (the first
+request after a quiet period is slow), and Render's free Postgres
+instance expires after 30 days.
