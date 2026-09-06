@@ -1,9 +1,6 @@
 const recipesRouter = require('express').Router()
 const Recipes = require('../models/recipes')
-const Suppliers = require('../models/suppliers')
-const SupplierPrices = require('../models/supplierPrices')
 const { buildPurchasePlan } = require('../utils/purchasePlan')
-const { buildPriceComparison } = require('../utils/priceComparison')
 
 recipesRouter.get('/', async (request, response) => {
   const recipes = await Recipes.getAll()
@@ -31,10 +28,7 @@ recipesRouter.post('/:id/purchase-plan', async (request, response) => {
   }
 
   const plan = buildPurchasePlan(recipe, pieCount)
-  const [suppliers, supplierPrices] = await Promise.all([Suppliers.getAll(), SupplierPrices.getAll()])
-  const priceComparison = buildPriceComparison(plan, supplierPrices, suppliers)
-
-  response.json({ ...plan, priceComparison })
+  response.json(plan)
 })
 
 module.exports = recipesRouter

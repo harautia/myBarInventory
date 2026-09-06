@@ -2,7 +2,6 @@ const express = require('express')
 const middleware = require('./utils/middleware')
 const ingredientsRouter = require('./controllers/ingredients')
 const recipesRouter = require('./controllers/recipes')
-const suppliersRouter = require('./controllers/suppliers')
 
 const app = express()
 
@@ -12,7 +11,6 @@ app.use(middleware.requestLogger)
 
 app.use('/api/ingredients', ingredientsRouter)
 app.use('/api/recipes', recipesRouter)
-app.use('/api/suppliers', suppliersRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

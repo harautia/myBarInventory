@@ -1,39 +1,30 @@
-// Source: https://www.kinuskikissa.fi/lihapiirakat-uunissa (yeast-dough
-// oven-baked meat pies, yields 20). Ingredients used at more than one
-// recipe step (salt in the dough/rice/filling, butter in the
-// dough/filling/topping) are combined into a single total quantity.
-// Water is part of the recipe but isn't purchased from the wholesaler,
-// so it's intentionally left out of tracked ingredients.
-// Rice: 2.25 dl dry rice converted to g at 1 dl = 85 g -> 191.25 g
-// (kept in grams to match the other weight-based ingredients).
-// Salt/sugar/black pepper/paprika converted from teaspoons to grams:
-//   salt: 4.5 tsp * 5 g/tsp = 22.5 g
-//   sugar: 1.5 tbsp = 4.5 tsp (1 tbsp = 3 tsp) * 4 g/tsp = 18 g
-//   black pepper: 1.5 tsp * 3 g/tsp = 4.5 g
-//   paprika powder: 1.5 tsp * 2.4 g/tsp = 3.6 g
-// Garlic cloves are tracked/used individually but purchased as whole
-// garlics: 10 cloves = 1 whole garlic, so the purchase list buys whole
-// garlics rather than a loose number of cloves.
+// Source: myBarInventory/recipies/metpie.txt (Finnish butter-crust meat
+// pie recipe, voitaikina dough + rice/ground-meat filling, egg-washed;
+// yields one oven tray cut into 16 pieces).
+// Water (6 dl) is part of the recipe but isn't purchased from the
+// wholesaler, so it's intentionally left out of tracked ingredients.
+// Volume/spoon measures converted to grams:
+//   wheat flour: 2 dl * 60 g/dl = 120 g
+//   baking powder: 2 tsp * 4 g/tsp = 8 g
+//   rice: 1.5 dl * 85 g/dl = 127.5 g (same dl->g factor as the previous
+//     recipe's "puuroriisiä")
+//   salt: 0.5 tsp * 5 g/tsp = 2.5 g (same factor as the previous recipe)
+//   white pepper: 0.25 tsp * 3 g/tsp = 0.75 g (same factor as the
+//     previous recipe's black pepper)
+//   paprika powder: 2 tsp * 2.4 g/tsp = 4.8 g (same factor as the
+//     previous recipe)
 const INGREDIENTS = [
-  { name: 'milk', unit: 'l', unit_type: 'continuous', quantity_per_batch: 0.5 },
-  { name: 'fresh yeast', unit: 'g', unit_type: 'continuous', quantity_per_batch: 25 },
-  { name: 'salt', unit: 'g', unit_type: 'continuous', quantity_per_batch: 22.5 },
-  { name: 'sugar', unit: 'g', unit_type: 'continuous', quantity_per_batch: 18 },
-  { name: 'butter', unit: 'g', unit_type: 'continuous', quantity_per_batch: 125 },
-  { name: 'bread flour', unit: 'l', unit_type: 'continuous', quantity_per_batch: 1.1 },
-  { name: 'rice', unit: 'g', unit_type: 'continuous', quantity_per_batch: 191.25 },
+  { name: 'butter', unit: 'g', unit_type: 'continuous', quantity_per_batch: 250 },
+  { name: 'wheat flour', unit: 'g', unit_type: 'continuous', quantity_per_batch: 120 },
+  { name: 'baking powder', unit: 'g', unit_type: 'continuous', quantity_per_batch: 8 },
+  { name: 'quark', unit: 'g', unit_type: 'continuous', quantity_per_batch: 125 },
+  { name: 'rice', unit: 'g', unit_type: 'continuous', quantity_per_batch: 127.5 },
   { name: 'onion', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 },
-  { name: 'ground meat', unit: 'g', unit_type: 'continuous', quantity_per_batch: 450 },
-  {
-    name: 'garlic clove',
-    unit: 'piece',
-    unit_type: 'discrete',
-    quantity_per_batch: 1,
-    purchase_pack_size: 10,
-    purchase_unit: 'whole garlic'
-  },
-  { name: 'black pepper', unit: 'g', unit_type: 'continuous', quantity_per_batch: 4.5 },
-  { name: 'paprika powder', unit: 'g', unit_type: 'continuous', quantity_per_batch: 3.6 }
+  { name: 'ground meat', unit: 'g', unit_type: 'continuous', quantity_per_batch: 400 },
+  { name: 'salt', unit: 'g', unit_type: 'continuous', quantity_per_batch: 2.5 },
+  { name: 'white pepper', unit: 'g', unit_type: 'continuous', quantity_per_batch: 0.75 },
+  { name: 'paprika powder', unit: 'g', unit_type: 'continuous', quantity_per_batch: 4.8 },
+  { name: 'egg', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 }
 ]
 
 exports.seed = async (knex) => {
@@ -59,7 +50,7 @@ exports.seed = async (knex) => {
   )
 
   const [recipe] = await knex('recipes')
-    .insert({ name: 'Oven-Baked Meat Pies (Lihapiirakat)', yield_count: 20 })
+    .insert({ name: 'Butter-Crust Meat Pies (Voitaikinapiirakat)', yield_count: 16 })
     .returning('id')
 
   const ingredientRows = await knex('ingredients').select('id', 'name')

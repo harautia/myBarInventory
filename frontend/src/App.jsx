@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import PlanProductionPage from './components/PlanProductionPage'
 import InventoryPage from './components/InventoryPage'
-import SuppliersPage from './components/SuppliersPage'
 
 const PAGES = {
   plan: { label: 'Plan production', component: PlanProductionPage },
-  inventory: { label: 'Inventory', component: InventoryPage },
-  suppliers: { label: 'Suppliers', component: SuppliersPage }
+  inventory: { label: 'Inventory', component: InventoryPage }
 }
 
 const App = () => {

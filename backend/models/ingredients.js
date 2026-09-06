@@ -1,5 +1,4 @@
 const db = require('../db/db')
-const { naturalUnitFor } = require('../utils/naturalUnit')
 
 const toDto = (row) => {
   const purchaseUnit = row.purchase_unit || row.unit
@@ -9,8 +8,7 @@ const toDto = (row) => {
     unit: row.unit,
     unitType: row.unit_type,
     currentStock: Number(row.current_stock),
-    purchaseUnit,
-    naturalUnit: naturalUnitFor(purchaseUnit)
+    purchaseUnit
   }
 }
 

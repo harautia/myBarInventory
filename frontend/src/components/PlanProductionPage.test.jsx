@@ -70,11 +70,11 @@ describe('PlanProductionPage', () => {
     render(<PlanProductionPage />)
 
     const user = userEvent.setup()
-    await user.clear(screen.getByRole('spinbutton'))
-    await user.type(screen.getByRole('spinbutton'), '25')
+    await user.clear(screen.getByRole('textbox'))
+    await user.type(screen.getByRole('textbox'), '25')
     await user.click(screen.getByRole('button', { name: /calculate/i }))
 
-    expect(await screen.findByText(/2\.5 needed → 3/)).toBeInTheDocument()
+    expect(await screen.findByText('2.5')).toBeInTheDocument()
     expect(screen.getByText(/egg: 3 unit/)).toBeInTheDocument()
   })
 

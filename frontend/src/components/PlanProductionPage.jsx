@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import recipeService from '../services/recipes'
 import IngredientRow from './IngredientRow'
-import PriceComparison from './PriceComparison'
 import formatQuantity from '../utils/formatQuantity'
 
 const RECIPE_ID = 1
+
+// Strips non-digits and collapses leading zeros (typing 0,0,1,0 lands on
+// "10", never "0010") so the field can never hold a zero-padded number.
+const sanitizePieCount = (raw) => raw.replace(/\D/g, '').replace(/^0+(?=\d)/, '')
 
 const PlanProductionPage = () => {
   const [pieCount, setPieCount] = useState(10)
@@ -30,10 +33,11 @@ const PlanProductionPage = () => {
         <label>
           Pies to produce:{' '}
           <input
-            type="number"
-            min="1"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             value={pieCount}
-            onChange={({ target }) => setPieCount(target.value)}
+            onChange={({ target }) => setPieCount(sanitizePieCount(target.value))}
           />
         </label>
         <button type="submit">Calculate</button>
@@ -74,8 +78,6 @@ const PlanProductionPage = () => {
               </ul>
             )}
           </div>
-
-          {plan.priceComparison && <PriceComparison comparison={plan.priceComparison} />}
         </>
       )}
     </div>

@@ -42,6 +42,10 @@ th, td {
   border-bottom: 1px solid #e5e5e5;
 }
 
+th.text-center, td.text-center {
+  text-align: center;
+}
+
 tr.shortfall {
   background: #fff3f0;
 }
@@ -57,4 +61,29 @@ tr.shortfall {
 .hint {
   color: #777;
   font-size: 0.9em;
+}
+
+.stock-input {
+  width: 90px;
+  padding: 6px 10px;
+  font-size: 0.95em;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stock-input::placeholder {
+  color: #aaa;
+}
+
+.stock-input:hover {
+  border-color: #999;
+}
+
+.stock-input:focus {
+  outline: none;
+  border-color: #222;
+  box-shadow: 0 0 0 3px rgba(34, 34, 34, 0.08);
 }

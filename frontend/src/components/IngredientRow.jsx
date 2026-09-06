@@ -5,7 +5,7 @@ const formatNeeded = (line) => {
   // never grams, so it's plain numbers rather than routed through
   // formatQuantity's kg conversion.
   if (line.neededRounded !== undefined && line.neededRounded !== line.needed) {
-    return `${line.needed} needed → ${line.neededRounded} (rounded up, can't buy a fraction of an ${line.name}) ${line.unit}`
+    return `${line.needed}`
   }
   return formatQuantity(line.needed, line.unit)
 }
