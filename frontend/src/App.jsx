@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>myBarInventory</h1>
+      <h1>Imaginary Inventory of Bar Serving Meat Pies</h1>
       <nav>
         {Object.entries(PAGES).map(([key, { label }]) => (
           <button
