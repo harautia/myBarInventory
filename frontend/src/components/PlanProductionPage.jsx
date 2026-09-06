@@ -10,7 +10,7 @@ const RECIPE_ID = 1
 const sanitizePieCount = (raw) => raw.replace(/\D/g, '').replace(/^0+(?=\d)/, '')
 
 const PlanProductionPage = () => {
-  const [pieCount, setPieCount] = useState(10)
+  const [pieCount, setPieCount] = useState('')
   const [plan, setPlan] = useState(null)
   const [error, setError] = useState(null)
 
@@ -36,6 +36,7 @@ const PlanProductionPage = () => {
             type="text"
             inputMode="numeric"
             pattern="[0-9]*"
+            placeholder="e.g. 10"
             value={pieCount}
             onChange={({ target }) => setPieCount(sanitizePieCount(target.value))}
           />
