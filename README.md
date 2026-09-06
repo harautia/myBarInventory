@@ -7,15 +7,6 @@ recipe, compare against current stock, and generate a purchase list.
 - `backend/` — Express API + PostgreSQL (via Knex). See [backend/README.md](backend/README.md).
 - `frontend/` — React + Vite UI. See [frontend/README.md](frontend/README.md).
 
-## Recipe (yields 20 pies)
-
-Oven-baked yeast-dough meat pies, adapted from
-[kinuskikissa.fi's lihapiirakat recipe](https://www.kinuskikissa.fi/lihapiirakat-uunissa):
-
-0.5l milk, 25g fresh yeast, 22.5g salt, 18g sugar, 125g butter,
-1.1l bread flour, 191.25g rice, 1 onion, 450g ground meat,
-1 garlic clove, 4.5g black pepper, 3.6g paprika powder.
-
 Notes:
 - Salt and butter are used at more than one step in the original recipe —
   dough, filling, and topping — and are combined here into one total
@@ -98,3 +89,19 @@ This is a free-tier deployment, so two things are expected behavior,
 not bugs: the service spins down after ~15 minutes idle (the first
 request after a quiet period is slow), and Render's free Postgres
 instance expires after 30 days.
+
+## CI/CD
+
+**CI:** `.github/workflows/ci.yml` runs on every push and PR to `main` —
+lint + tests for `backend/`, and lint + tests + a production `npm run
+build` for `frontend/`. Two independent jobs, so a failure in one is
+still visible even if the other passes.
+
+**CD:** Render auto-deploys on every push to `main` (its default
+behavior for a connected repo — `render.yaml` doesn't override it),
+rebuilding the `Dockerfile` and running migrations as part of the
+container's start command, as described above.
+
+These two are **not linked**: CI does not gate the Render deploy. A
+push that fails CI still deploys — check the Actions tab (or `gh run
+list`) after pushing rather than assuming a red check stopped anything.
