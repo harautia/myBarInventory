@@ -77,10 +77,20 @@ a free Postgres database.
    reads `render.yaml` and shows both resources (web service +
    database) to create.
 3. Apply the blueprint and wait for the first build to finish.
-4. One-time only: open the web service's **Shell** tab and run
-   `npm run seed` (from `backend/`) to load the recipe/ingredient data.
+4. One-time only: load the recipe/ingredient data. Render's free plan
+   has no Shell access, so this goes through a token-gated endpoint
+   instead of `npm run seed` directly:
+   - In the web service's **Environment** tab, add `SEED_TOKEN` with a
+     secret value you choose, and save (this triggers a redeploy).
+   - Once redeployed, run from your own machine:
+     ```bash
+     curl -X POST -H "x-seed-token: <your SEED_TOKEN value>" \
+       https://<your-service>.onrender.com/api/admin/seed
+     ```
    Migrations already ran automatically as part of the container's
-   start command, so this step only needs the data, not the schema.
+   start command, so this only needs to load data, not the schema.
+   Without `SEED_TOKEN` set, the endpoint always refuses — it's inert
+   until you deliberately turn it on.
 5. Visit the service's `*.onrender.com` URL and confirm a purchase-plan
    calculation works end-to-end.
 
