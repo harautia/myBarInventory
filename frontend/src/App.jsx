@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PlanProductionPage from './components/PlanProductionPage'
 import InventoryPage from './components/InventoryPage'
+import LoginPage from './components/LoginPage'
+import authService from './services/auth'
 
 const PAGES = {
   plan: { label: 'Plan production', component: PlanProductionPage },
@@ -9,6 +11,22 @@ const PAGES = {
 
 const App = () => {
   const [page, setPage] = useState('plan')
+  const [authState, setAuthState] = useState('checking')
+
+  useEffect(() => {
+    authService.getSession().then(({ authenticated }) => {
+      setAuthState(authenticated ? 'in' : 'out')
+    })
+  }, [])
+
+  const handleLogout = async () => {
+    await authService.logout()
+    setAuthState('out')
+  }
+
+  if (authState === 'checking') return null
+  if (authState === 'out') return <LoginPage onSuccess={() => setAuthState('in')} />
+
   const ActivePage = PAGES[page].component
 
   return (
@@ -25,6 +43,9 @@ const App = () => {
             {label}
           </button>
         ))}
+        <button type="button" onClick={handleLogout}>
+          Log out
+        </button>
       </nav>
       <ActivePage />
     </div>

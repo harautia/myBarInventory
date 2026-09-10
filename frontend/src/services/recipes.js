@@ -1,10 +1,10 @@
-import axios from 'axios'
+import api from './api'
 
-const baseUrl = '/api/recipes'
+const baseUrl = '/recipes'
 
-const getRecipe = (id) => axios.get(`${baseUrl}/${id}`).then((response) => response.data)
+const getRecipe = (id) => api.get(`${baseUrl}/${id}`).then((response) => response.data)
 
 const getPurchasePlan = (id, pieCount) =>
-  axios.post(`${baseUrl}/${id}/purchase-plan`, { pieCount }).then((response) => response.data)
+  api.post(`${baseUrl}/${id}/purchase-plan`, { pieCount }).then((response) => response.data)
 
 export default { getRecipe, getPurchasePlan }

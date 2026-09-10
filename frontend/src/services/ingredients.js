@@ -1,10 +1,10 @@
-import axios from 'axios'
+import api from './api'
 
-const baseUrl = '/api/ingredients'
+const baseUrl = '/ingredients'
 
-const getAll = () => axios.get(baseUrl).then((response) => response.data)
+const getAll = () => api.get(baseUrl).then((response) => response.data)
 
 const updateStock = (id, currentStock) =>
-  axios.put(`${baseUrl}/${id}/stock`, { currentStock }).then((response) => response.data)
+  api.put(`${baseUrl}/${id}/stock`, { currentStock }).then((response) => response.data)
 
 export default { getAll, updateStock }

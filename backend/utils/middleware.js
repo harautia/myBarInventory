@@ -1,4 +1,19 @@
+const jwt = require('jsonwebtoken')
 const logger = require('./logger')
+const config = require('./config')
+const { SESSION_COOKIE } = require('../controllers/auth')
+
+const requireAuth = (request, response, next) => {
+  const token = request.cookies?.[SESSION_COOKIE]
+  if (!token) return response.status(401).json({ error: 'not authenticated' })
+
+  try {
+    jwt.verify(token, config.SESSION_SECRET)
+    next()
+  } catch {
+    response.status(401).json({ error: 'not authenticated' })
+  }
+}
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -23,6 +38,7 @@ const errorHandler = (error, request, response, next) => {
 }
 
 module.exports = {
+  requireAuth,
   requestLogger,
   unknownEndpoint,
   errorHandler

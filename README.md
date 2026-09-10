@@ -45,7 +45,7 @@ in the UI — the underlying data stays in grams either way.
 # Backend
 cd backend
 npm install
-cp .env.example .env   # adjust DATABASE_URL if needed
+cp .env.example .env   # adjust DATABASE_URL, OWNER_PASSWORD, SESSION_SECRET
 npm run migrate
 npm run seed
 npm run dev             # http://localhost:3003
@@ -68,7 +68,13 @@ a free Postgres database.
    reads `render.yaml` and shows both resources (web service +
    database) to create.
 3. Apply the blueprint and wait for the first build to finish.
-4. One-time only: load the recipe/ingredient data. Render's free plan
+4. In the web service's **Environment** tab, add `OWNER_PASSWORD` (the
+   password you'll use to log in) and `SESSION_SECRET` (a long random
+   string — e.g. `openssl rand -hex 32`), then save. Without these, the
+   app is unreachable to everyone, including you: every route except
+   `/api/login` requires a valid session, and login always fails until
+   `OWNER_PASSWORD` is set.
+5. Load the recipe/ingredient data (one-time only). Render's free plan
    has no Shell access, so this goes through a token-gated endpoint
    instead of `npm run seed` directly:
    - In the web service's **Environment** tab, add `SEED_TOKEN` with a
@@ -82,8 +88,9 @@ a free Postgres database.
    start command, so this only needs to load data, not the schema.
    Without `SEED_TOKEN` set, the endpoint always refuses — it's inert
    until you deliberately turn it on.
-5. Visit the service's `*.onrender.com` URL and confirm a purchase-plan
-   calculation works end-to-end.
+6. Visit the service's `*.onrender.com` URL, log in with
+   `OWNER_PASSWORD`, and confirm a purchase-plan calculation works
+   end-to-end.
 
 This is a free-tier deployment, so two things are expected behavior,
 not bugs: the service spins down after ~15 minutes idle (the first
