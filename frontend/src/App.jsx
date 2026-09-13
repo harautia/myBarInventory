@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import PlanProductionPage from './components/PlanProductionPage'
 import InventoryPage from './components/InventoryPage'
+import RecipePage from './components/RecipePage'
 import LoginPage from './components/LoginPage'
 import authService from './services/auth'
 
 const PAGES = {
   plan: { label: 'Plan production', component: PlanProductionPage },
-  inventory: { label: 'Inventory', component: InventoryPage }
+  inventory: { label: 'Inventory', component: InventoryPage },
+  recipe: { label: 'Recipe', component: RecipePage }
 }
 
 const App = () => {

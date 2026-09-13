@@ -13,7 +13,7 @@
 //     previous recipe's black pepper)
 //   paprika powder: 2 tsp * 2.4 g/tsp = 4.8 g (same factor as the
 //     previous recipe)
-const INGREDIENTS = [
+const MEAT_PIE_INGREDIENTS = [
   { name: 'butter', unit: 'g', unit_type: 'continuous', quantity_per_batch: 250 },
   { name: 'wheat flour', unit: 'g', unit_type: 'continuous', quantity_per_batch: 120 },
   { name: 'baking powder', unit: 'g', unit_type: 'continuous', quantity_per_batch: 8 },
@@ -27,19 +27,42 @@ const INGREDIENTS = [
   { name: 'egg', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 1 }
 ]
 
+// Same dough, filling seasoning and egg wash as the meat pie recipe, but
+// the ground meat is swapped for a plant-based filling: 250g oat mince
+// and 2 carrots.
+const VEGAN_PIE_INGREDIENTS = [
+  ...MEAT_PIE_INGREDIENTS.filter(({ name }) => name !== 'ground meat'),
+  { name: 'oat mince', unit: 'g', unit_type: 'continuous', quantity_per_batch: 250 },
+  { name: 'carrot', unit: 'piece', unit_type: 'discrete', quantity_per_batch: 2 }
+]
+
+// Order matters: the frontend hardcodes recipe id 1 as the meat pie recipe
+// for the "Plan production" page, so it must be inserted first.
+const RECIPES = [
+  { name: 'Butter-Crust Meat Pies (Voitaikinapiirakat)', yield_count: 16, ingredients: MEAT_PIE_INGREDIENTS },
+  { name: 'Butter-Crust Vegan Pies (Kasvispiirakat)', yield_count: 16, ingredients: VEGAN_PIE_INGREDIENTS }
+]
+
 exports.seed = async (knex) => {
   await knex('recipe_ingredients').del()
   await knex('recipes').del()
   await knex('ingredients').del()
 
   // Reset serial sequences so re-seeding always reproduces the same ids
-  // (the frontend hardcodes recipe id 1 for this single-recipe v1).
+  // (the frontend hardcodes recipe id 1 for the meat pie recipe).
   await knex.raw('ALTER SEQUENCE ingredients_id_seq RESTART WITH 1')
   await knex.raw('ALTER SEQUENCE recipes_id_seq RESTART WITH 1')
   await knex.raw('ALTER SEQUENCE recipe_ingredients_id_seq RESTART WITH 1')
 
+  const ingredientsByName = new Map()
+  for (const recipe of RECIPES) {
+    for (const ingredient of recipe.ingredients) {
+      ingredientsByName.set(ingredient.name, ingredient)
+    }
+  }
+
   await knex('ingredients').insert(
-    INGREDIENTS.map(({ name, unit, unit_type, purchase_pack_size, purchase_unit }) => ({
+    [...ingredientsByName.values()].map(({ name, unit, unit_type, purchase_pack_size, purchase_unit }) => ({
       name,
       unit,
       unit_type,
@@ -49,18 +72,18 @@ exports.seed = async (knex) => {
     }))
   )
 
-  const [recipe] = await knex('recipes')
-    .insert({ name: 'Butter-Crust Meat Pies (Voitaikinapiirakat)', yield_count: 16 })
-    .returning('id')
-
   const ingredientRows = await knex('ingredients').select('id', 'name')
   const idByName = Object.fromEntries(ingredientRows.map((row) => [row.name, row.id]))
 
-  await knex('recipe_ingredients').insert(
-    INGREDIENTS.map(({ name, quantity_per_batch }) => ({
-      recipe_id: recipe.id,
-      ingredient_id: idByName[name],
-      quantity_per_batch
-    }))
-  )
+  for (const { name, yield_count, ingredients } of RECIPES) {
+    const [recipe] = await knex('recipes').insert({ name, yield_count }).returning('id')
+
+    await knex('recipe_ingredients').insert(
+      ingredients.map(({ name, quantity_per_batch }) => ({
+        recipe_id: recipe.id,
+        ingredient_id: idByName[name],
+        quantity_per_batch
+      }))
+    )
+  }
 }

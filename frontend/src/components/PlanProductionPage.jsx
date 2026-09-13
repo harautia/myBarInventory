@@ -1,15 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import recipeService from '../services/recipes'
 import IngredientRow from './IngredientRow'
 import formatQuantity from '../utils/formatQuantity'
-
-const RECIPE_ID = 1
+import BASE_INGREDIENT_NAMES from '../utils/baseIngredients'
 
 // Strips non-digits and collapses leading zeros (typing 0,0,1,0 lands on
 // "10", never "0010") so the field can never hold a zero-padded number.
 const sanitizePieCount = (raw) => raw.replace(/\D/g, '').replace(/^0+(?=\d)/, '')
 
-const PlanProductionPage = () => {
+// The base dough is shared with the other pie recipe, so only half its
+// current stock is assumed available to any one recipe.
+const BASE_STOCK_SHARE = 0.5
+
+// The most pies producible right now: the tightest ingredient (available
+// stock / quantity-per-batch) sets the batch ceiling, converted to a pie
+// count and floored since partial pies can't be sold.
+const maxProducible = (recipe) => {
+  const maxBatches = Math.min(
+    ...recipe.ingredients.map((ingredient) => {
+      const share = BASE_INGREDIENT_NAMES.includes(ingredient.name) ? BASE_STOCK_SHARE : 1
+      return (ingredient.currentStock * share) / ingredient.quantityPerBatch
+    })
+  )
+  return Math.max(0, Math.floor(maxBatches * recipe.yieldCount))
+}
+
+const RecipePlanner = ({ recipe }) => {
   const [pieCount, setPieCount] = useState('')
   const [plan, setPlan] = useState(null)
   const [error, setError] = useState(null)
@@ -18,7 +34,7 @@ const PlanProductionPage = () => {
     event.preventDefault()
     setError(null)
     try {
-      const result = await recipeService.getPurchasePlan(RECIPE_ID, Number(pieCount))
+      const result = await recipeService.getPurchasePlan(recipe.id, Number(pieCount))
       setPlan(result)
     } catch (err) {
       setPlan(null)
@@ -26,9 +42,16 @@ const PlanProductionPage = () => {
     }
   }
 
+  const handleClear = () => {
+    setPieCount('')
+    setPlan(null)
+    setError(null)
+  }
+
   return (
     <div>
-      <h2>Plan production</h2>
+      <h3>{recipe.name}</h3>
+      <p className="hint">Current inventory can make {maxProducible(recipe)} pies</p>
       <form onSubmit={handleCalculate}>
         <label>
           Pies to produce:{' '}
@@ -66,7 +89,7 @@ const PlanProductionPage = () => {
           </table>
 
           <div className="purchase-list">
-            <h3>Purchase list (rounded values)</h3>
+            <h4>Purchase list (rounded values)</h4>
             {plan.purchaseList.length === 0 ? (
               <p>Nothing to buy — stock already covers this plan.</p>
             ) : (
@@ -79,8 +102,32 @@ const PlanProductionPage = () => {
               </ul>
             )}
           </div>
+
+          <button type="button" onClick={handleClear}>
+            Clear
+          </button>
         </>
       )}
+    </div>
+  )
+}
+
+const PlanProductionPage = () => {
+  const [recipes, setRecipes] = useState([])
+
+  useEffect(() => {
+    recipeService
+      .getAll()
+      .then((summaries) => Promise.all(summaries.map(({ id }) => recipeService.getRecipe(id))))
+      .then(setRecipes)
+  }, [])
+
+  return (
+    <div>
+      <h2>Plan production</h2>
+      {recipes.map((recipe) => (
+        <RecipePlanner key={recipe.id} recipe={recipe} />
+      ))}
     </div>
   )
 }
