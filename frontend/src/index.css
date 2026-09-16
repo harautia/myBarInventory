@@ -63,6 +63,33 @@ tr.shortfall {
   font-size: 0.9em;
 }
 
+.plan-form {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.plan-form h3 {
+  margin-top: 0;
+}
+
+.plan-form-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.plan-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.95em;
+}
+
 .stock-input {
   width: 90px;
   padding: 6px 10px;

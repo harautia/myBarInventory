@@ -1,6 +1,6 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
-const { buildPurchasePlan } = require('../utils/purchasePlan')
+const { buildPurchasePlan, buildCombinedPurchasePlan } = require('../utils/purchasePlan')
 
 const recipe = {
   id: 1,
@@ -119,5 +119,60 @@ describe('buildPurchasePlan', () => {
       10
     )
     assert.deepStrictEqual(plan.purchaseList, [])
+  })
+})
+
+// A second recipe sharing the 'butter' ingredient (same ingredientId as the
+// main fixture) with the meat pie recipe, plus one ingredient of its own.
+const otherRecipe = {
+  id: 2,
+  yieldCount: 10,
+  ingredients: [
+    { ingredientId: 1, name: 'butter', unit: 'g', unitType: 'continuous', quantityPerBatch: 100, currentStock: 0 },
+    { ingredientId: 5, name: 'carrot', unit: 'piece', unitType: 'discrete', quantityPerBatch: 2, currentStock: 0 }
+  ]
+}
+
+describe('buildCombinedPurchasePlan', () => {
+  test('sums a shared ingredient across recipes and checks stock only once', () => {
+    const meat = withStockFor('butter', 150)
+    const vegan = { ...otherRecipe, ingredients: otherRecipe.ingredients.map((i) => (i.name === 'butter' ? { ...i, currentStock: 150 } : i)) }
+
+    // Each recipe needs 100 g of butter for 1 batch; combined that's 200 g
+    // against the shared 150 g in stock -- a 50 g shortfall, not zero (which
+    // is what each recipe would report independently against the full stock).
+    const plan = buildCombinedPurchasePlan([
+      { recipe: meat, pieCount: 10 },
+      { recipe: vegan, pieCount: 10 }
+    ])
+
+    const butter = plan.lines.find((l) => l.name === 'butter')
+    assert.strictEqual(butter.needed, 200)
+    assert.strictEqual(butter.rawShortfall, 50)
+    assert.strictEqual(butter.shortfall, 50)
+    assert.strictEqual(plan.lines.filter((l) => l.name === 'butter').length, 1)
+  })
+
+  test('reports pieCount and batches per recipe alongside the merged lines', () => {
+    const plan = buildCombinedPurchasePlan([
+      { recipe: withStock(0), pieCount: 20 },
+      { recipe: otherRecipe, pieCount: 5 }
+    ])
+
+    assert.deepStrictEqual(plan.items, [
+      { recipeId: 1, pieCount: 20, batches: 2 },
+      { recipeId: 2, pieCount: 5, batches: 0.5 }
+    ])
+  })
+
+  test('an ingredient unique to one recipe uses just that recipe\'s need', () => {
+    const plan = buildCombinedPurchasePlan([
+      { recipe: withStock(0), pieCount: 10 },
+      { recipe: otherRecipe, pieCount: 10 }
+    ])
+
+    const carrot = plan.lines.find((l) => l.name === 'carrot')
+    assert.strictEqual(carrot.needed, 2)
+    assert.strictEqual(carrot.shortfall, 2)
   })
 })
