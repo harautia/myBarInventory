@@ -54,4 +54,15 @@ describe('authentication', () => {
 
     await api.get('/api/ingredients').set('Cookie', logoutCookie).expect(401)
   })
+
+  test('repeated wrong-password attempts get rate limited', async () => {
+    const responses = []
+    for (let i = 0; i < 8; i++) {
+      const response = await api.post('/api/login').send({ password: 'wrong' })
+      responses.push(response.status)
+    }
+
+    assert.ok(responses.includes(401), 'expected some attempts to be rejected as wrong password')
+    assert.ok(responses.includes(429), 'expected excess attempts to be rate limited')
+  })
 })

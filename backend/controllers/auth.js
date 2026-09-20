@@ -1,6 +1,7 @@
 const crypto = require('node:crypto')
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
+const { loginLimiter } = require('../utils/rateLimiter')
 
 const authRouter = require('express').Router()
 
@@ -21,7 +22,7 @@ const passwordMatches = (candidate) => {
   return crypto.timingSafeEqual(expected, given)
 }
 
-authRouter.post('/login', (request, response) => {
+authRouter.post('/login', loginLimiter, (request, response) => {
   const { password } = request.body
 
   if (!config.OWNER_PASSWORD || !passwordMatches(password)) {

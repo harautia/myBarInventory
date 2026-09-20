@@ -1,4 +1,5 @@
 const express = require('express')
+const helmet = require('helmet')
 const cookieParser = require('cookie-parser')
 const middleware = require('./utils/middleware')
 const { authRouter } = require('./controllers/auth')
@@ -8,6 +9,14 @@ const adminRouter = require('./controllers/admin')
 
 const app = express()
 
+// Render terminates TLS and proxies requests to this app, so trust its
+// single hop of X-Forwarded-For to get the real client IP (used by the
+// login rate limiter) instead of Render's proxy address.
+app.set('trust proxy', 1)
+
+// CSP is left off: a correct policy for the Vite-built frontend needs
+// testing against the actual production bundle, which is out of scope here.
+app.use(helmet({ contentSecurityPolicy: false }))
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static('dist'))
