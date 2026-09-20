@@ -11,4 +11,12 @@ const loginLimiter = rateLimit({
   message: { error: 'too many login attempts, please try again later' }
 })
 
-module.exports = { loginLimiter }
+const visitLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'too many requests, please try again later' }
+})
+
+module.exports = { loginLimiter, visitLimiter }

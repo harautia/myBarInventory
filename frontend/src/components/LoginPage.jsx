@@ -1,10 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import authService from '../services/auth'
+import pageViewsService from '../services/pageViews'
 
 const LoginPage = ({ onSuccess }) => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const [viewCount, setViewCount] = useState(null)
+
+  useEffect(() => {
+    pageViewsService
+      .record()
+      .then(({ count }) => setViewCount(count))
+      .catch(() => {})
+  }, [])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -37,6 +46,8 @@ const LoginPage = ({ onSuccess }) => {
       </form>
 
       {error && <p style={{ color: 'crimson' }}>{error}</p>}
+
+      {viewCount !== null && <p>{viewCount} visits so far</p>}
     </div>
   )
 }

@@ -6,6 +6,8 @@ const { authRouter } = require('./controllers/auth')
 const ingredientsRouter = require('./controllers/ingredients')
 const recipesRouter = require('./controllers/recipes')
 const adminRouter = require('./controllers/admin')
+const pageViewsRouter = require('./controllers/pageViews')
+const { visitLimiter } = require('./utils/rateLimiter')
 
 const app = express()
 
@@ -29,6 +31,9 @@ app.use('/api/recipes', middleware.requireAuth, recipesRouter)
 // SEED_TOKEN secret and driven by curl for ops (no browser session involved),
 // see controllers/admin.js.
 app.use('/api/admin', adminRouter)
+// /api/page-views is intentionally not behind requireAuth: it powers the
+// visit counter shown on the login page, before anyone is authenticated.
+app.use('/api/page-views', visitLimiter, pageViewsRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
