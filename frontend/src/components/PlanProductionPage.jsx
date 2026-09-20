@@ -3,6 +3,7 @@ import recipeService from '../services/recipes'
 import IngredientRow from './IngredientRow'
 import formatQuantity from '../utils/formatQuantity'
 import BASE_INGREDIENT_NAMES from '../utils/baseIngredients'
+import { Alert, Button, Card, Spinner } from './ui'
 
 // Strips non-digits and collapses leading zeros (typing 0,0,1,0 lands on
 // "10", never "0010") so the field can never hold a zero-padded number.
@@ -49,12 +50,16 @@ const PlanProductionPage = () => {
   const [pieCounts, setPieCounts] = useState({})
   const [plan, setPlan] = useState(null)
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     recipeService
       .getAll()
       .then((summaries) => Promise.all(summaries.map(({ id }) => recipeService.getRecipe(id))))
-      .then(setRecipes)
+      .then((data) => {
+        setRecipes(data)
+        setLoading(false)
+      })
   }, [])
 
   const basePieCount = recipes.length > 0 ? maxBaseProducible(recipes[0]) : null
@@ -89,6 +94,8 @@ const PlanProductionPage = () => {
     <div>
       <h2>Plan production</h2>
 
+      {loading && <Spinner />}
+
       {basePieCount !== null && (
         <div>
           <h3>Base</h3>
@@ -107,8 +114,7 @@ const PlanProductionPage = () => {
       ))}
 
       {recipes.length > 0 && (
-        <div className="plan-form">
-          <h3>Calculate a purchase plan</h3>
+        <Card title="Calculate a purchase plan">
           <p className="hint">Enter how many of each pie to produce</p>
           <form onSubmit={handleCalculate} className="plan-form-fields">
             {recipes.map((recipe) => (
@@ -125,12 +131,12 @@ const PlanProductionPage = () => {
                 />
               </label>
             ))}
-            <button type="submit">Calculate</button>
+            <Button type="submit">Calculate</Button>
           </form>
-        </div>
+        </Card>
       )}
 
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+      {error && <Alert>{error}</Alert>}
 
       {plan && (
         <>
@@ -142,24 +148,25 @@ const PlanProductionPage = () => {
               })
               .join(', ')}
           </p>
-          <table>
-            <thead>
-              <tr>
-                <th>Ingredient</th>
-                <th>Needed</th>
-                <th>In stock</th>
-                <th>Shortfall</th>
-              </tr>
-            </thead>
-            <tbody>
-              {plan.lines.map((line) => (
-                <IngredientRow key={line.ingredientId} line={line} />
-              ))}
-            </tbody>
-          </table>
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ingredient</th>
+                  <th>Needed</th>
+                  <th>In stock</th>
+                  <th>Shortfall</th>
+                </tr>
+              </thead>
+              <tbody>
+                {plan.lines.map((line) => (
+                  <IngredientRow key={line.ingredientId} line={line} />
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-          <div className="purchase-list">
-            <h4>Purchase list (rounded values)</h4>
+          <Card tone="warning" title="Purchase list (rounded values)">
             {plan.purchaseList.length === 0 ? (
               <p>Nothing to buy — stock already covers this plan.</p>
             ) : (
@@ -171,11 +178,11 @@ const PlanProductionPage = () => {
                 ))}
               </ul>
             )}
-          </div>
+          </Card>
 
-          <button type="button" onClick={handleClear}>
+          <Button variant="secondary" onClick={handleClear}>
             Clear
-          </button>
+          </Button>
         </>
       )}
     </div>

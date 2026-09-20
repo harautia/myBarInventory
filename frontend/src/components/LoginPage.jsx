@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import authService from '../services/auth'
 import pageViewsService from '../services/pageViews'
+import { Button, FormField, Alert } from './ui'
 
 const LoginPage = ({ onSuccess }) => {
   const [password, setPassword] = useState('')
@@ -33,19 +34,22 @@ const LoginPage = ({ onSuccess }) => {
     <div>
       <h2>Log in</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-          autoFocus
-        />
-        <button type="submit" disabled={submitting || password.length === 0}>
+        <FormField label="Password" htmlFor="login-password">
+          <input
+            id="login-password"
+            className="text-input"
+            type="password"
+            value={password}
+            onChange={({ target }) => setPassword(target.value)}
+            autoFocus
+          />
+        </FormField>
+        <Button type="submit" disabled={submitting || password.length === 0}>
           Log in
-        </button>
+        </Button>
       </form>
 
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+      {error && <Alert>{error}</Alert>}
 
       {viewCount !== null && <p>{viewCount} visits so far</p>}
     </div>

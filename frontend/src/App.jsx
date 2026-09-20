@@ -4,6 +4,7 @@ import InventoryPage from './components/InventoryPage'
 import RecipePage from './components/RecipePage'
 import LoginPage from './components/LoginPage'
 import authService from './services/auth'
+import { Button, Spinner } from './components/ui'
 
 const PAGES = {
   plan: { label: 'Plan production', component: PlanProductionPage },
@@ -26,28 +27,32 @@ const App = () => {
     setAuthState('out')
   }
 
-  if (authState === 'checking') return null
+  if (authState === 'checking') {
+    return (
+      <div className="app-loading">
+        <Spinner label="Checking session…" />
+      </div>
+    )
+  }
   if (authState === 'out') return <LoginPage onSuccess={() => setAuthState('in')} />
 
   const ActivePage = PAGES[page].component
 
   return (
     <div>
-      <h1>Imaginary Inventory of Bar Serving Meat Pies</h1>
+      <header className="app-header">
+        <img src="/favicon.svg" alt="" width="32" height="32" />
+        <h1>Imaginary Inventory of Bar Serving Meat Pies</h1>
+      </header>
       <nav>
         {Object.entries(PAGES).map(([key, { label }]) => (
-          <button
-            key={key}
-            type="button"
-            className={page === key ? 'active' : ''}
-            onClick={() => setPage(key)}
-          >
+          <Button key={key} variant="nav" active={page === key} onClick={() => setPage(key)}>
             {label}
-          </button>
+          </Button>
         ))}
-        <button type="button" onClick={handleLogout}>
+        <Button variant="secondary" onClick={handleLogout}>
           Log out
-        </button>
+        </Button>
       </nav>
       <ActivePage />
     </div>

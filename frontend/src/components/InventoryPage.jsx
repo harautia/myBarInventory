@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react'
 import ingredientService from '../services/ingredients'
+import { Alert, Button, Spinner, EmptyState } from './ui'
 
 const InventoryPage = () => {
   const [ingredients, setIngredients] = useState([])
   const [drafts, setDrafts] = useState({})
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    ingredientService.getAll().then(setIngredients)
+    ingredientService.getAll().then((data) => {
+      setIngredients(data)
+      setLoading(false)
+    })
   }, [])
 
   const handleChange = (id, value) => {
@@ -37,39 +42,45 @@ const InventoryPage = () => {
   return (
     <div>
       <h2>Ingredient stock</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Ingredient</th>
-            <th className="text-center">Current stock</th>
-            <th className="text-center">New value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ingredients.map((ingredient) => (
-            <tr key={ingredient.id}>
-              <td>{ingredient.name} ({ingredient.unit})</td>
-              <td className="text-center">{ingredient.currentStock}</td>
-              <td className="text-center">
-                <input
-                  className="stock-input"
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="-"
-                  value={drafts[ingredient.id] ?? ''}
-                  onChange={({ target }) => handleChange(ingredient.id, target.value)}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {loading && <Spinner />}
+      {!loading && ingredients.length === 0 && <EmptyState title="No ingredients yet" />}
+      {!loading && ingredients.length > 0 && (
+        <div className="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Ingredient</th>
+                <th className="text-center">Current stock</th>
+                <th className="text-center">New value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ingredients.map((ingredient) => (
+                <tr key={ingredient.id}>
+                  <td>{ingredient.name} ({ingredient.unit})</td>
+                  <td className="text-center">{ingredient.currentStock}</td>
+                  <td className="text-center">
+                    <input
+                      className="stock-input"
+                      type="text"
+                      inputMode="decimal"
+                      placeholder="-"
+                      value={drafts[ingredient.id] ?? ''}
+                      onChange={({ target }) => handleChange(ingredient.id, target.value)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+      {error && <Alert>{error}</Alert>}
 
-      <button type="button" onClick={handleSaveAll} disabled={Object.keys(drafts).length === 0}>
+      <Button onClick={handleSaveAll} disabled={Object.keys(drafts).length === 0}>
         Save changes
-      </button>
+      </Button>
     </div>
   )
 }
