@@ -97,6 +97,30 @@ not bugs: the service spins down after ~15 minutes idle (the first
 request after a quiet period is slow), and Render's free Postgres
 instance expires after 30 days.
 
+## Login security
+
+The app is gated by a single shared `OWNER_PASSWORD` (see above), checked
+by `backend/controllers/auth.js`. `POST /api/login` is rate limited
+(`backend/utils/rateLimiter.js`) to 5 wrong attempts per IP per 15
+minutes — once hit, every further request to that endpoint returns
+`429`, including one with the correct password, until the window
+resets. Successful logins don't count against the limit, so mistyping
+it a couple of times and then getting it right doesn't cost you
+anything.
+
+This makes casual/scripted brute-forcing impractical (~480 guesses/day
+per IP against what should be a long passphrase, not the placeholder
+value in `.env.example`), but it's not absolute:
+
+- It's **per IP** — an attacker spreading guesses across many IPs (a
+  botnet, rotating proxies/VPN) isn't meaningfully slowed by this.
+- The attempt counter is **in-memory**, not persisted — it resets on
+  every server restart, including a Render free-tier instance spinning
+  back up after idling out.
+
+Rate limiting is defense in depth, not a substitute for a strong
+`OWNER_PASSWORD`.
+
 ## CI/CD
 
 **CI:** `.github/workflows/ci.yml` runs on every push and PR to `main` —
