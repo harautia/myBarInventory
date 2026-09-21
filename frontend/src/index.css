@@ -96,6 +96,23 @@ nav {
   margin-bottom: var(--space-5);
 }
 
+.app-footer {
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.app-footer p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.app-footer a {
+  color: var(--color-brand-600);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

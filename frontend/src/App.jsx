@@ -41,7 +41,7 @@ const App = () => {
   return (
     <div>
       <header className="app-header">
-        <img src="/favicon.svg" alt="" width="32" height="32" />
+        <img src="/favicon.png" alt="" width="32" height="32" />
         <h1>Imaginary Inventory of Bar Serving Meat Pies</h1>
       </header>
       <nav>
@@ -55,6 +55,12 @@ const App = () => {
         </Button>
       </nav>
       <ActivePage />
+      <footer className="app-footer">
+        <p>
+          &copy; {new Date().getFullYear()} Riverbend Solutions &mdash; Hannu Rautiainen &mdash;{' '}
+          <a href="mailto:harautia1976@gmail.com">harautia1976@gmail.com</a>
+        </p>
+      </footer>
     </div>
   )
 }
