@@ -41,7 +41,7 @@ const App = () => {
   return (
     <div>
       <header className="app-header">
-        <img src="/favicon.png" alt="" width="32" height="32" />
+        <img src="/App-logo.png" alt="" width="32" height="32" />
         <h1>Imaginary Inventory of Bar Serving Meat Pies</h1>
       </header>
       <nav>
