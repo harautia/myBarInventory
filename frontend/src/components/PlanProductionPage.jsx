@@ -98,8 +98,7 @@ const PlanProductionPage = () => {
 
       {basePieCount !== null && (
         <div>
-          <h3>Base</h3>
-          <p className="hint">Shared dough for every pie recipe below</p>
+          <h3>Meat and Vegan Pie Base</h3>
           <p className="hint">Current inventory covers {basePieCount} bases</p>
         </div>
       )}
